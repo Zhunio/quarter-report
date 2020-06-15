@@ -1,0 +1,87 @@
+<div class="container-fluid">
+
+  <div class="d-flex mt-4">
+    <mat-form-field class="mr-3">
+      <mat-label>Year</mat-label>
+      <input matInput [matDatepicker]="datePicker" [formControl]="date">
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker
+                      startView="multi-year"
+                      (yearSelected)="onChosenYear($event, datePicker)">
+      </mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="mr-3">
+      <mat-label>Quarter</mat-label>
+      <mat-select [(value)]="quarter" (valueChange)="onQuarterSelect()">
+        <mat-option *ngFor="let quarter of quarters" [value]="quarter.value">
+          {{ quarter.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button (click)="onPrint()" class="ml-auto" mat-fab color="primary">
+      <mat-icon>print</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="quarter$ | async as quarter">
+
+    <div #noPrint>
+
+      <div class="month mt-5" *ngFor="let month of months(quarter)">
+        <h1>{{ month }}</h1>
+
+        <ag-grid-angular
+          #monthGrids
+          domLayout="autoHeight"
+          class="ag-theme-material mat-elevation-z8"
+          [rowData]="rowDataMonth(quarter, month)"
+          [gridOptions]="monthGridOptions"
+          (cellValueChanged)="onCellValueChanged(quarter)"
+        >
+        </ag-grid-angular>
+      </div>
+
+      <div class="report mt-5 mb-5">
+        <h1>Report</h1>
+
+        <ag-grid-angular
+          #report
+          domLayout="autoHeight"
+          class="ag-theme-material mat-elevation-z8"
+          [gridOptions]="reportGridOptions(quarter)"
+          [rowData]="getReportRowData(quarter)"
+        >
+        </ag-grid-angular>
+      </div>
+    </div>
+
+    <div #print id="print" style="opacity: 0; height: 0; overflow: hidden">
+
+      <h1>Months</h1>
+
+      <table>
+        <tr>
+          <td *ngFor="let header of monthGridOptions.columnDefs">{{ header.headerName }}</td>
+        </tr>
+        <tr *ngFor="let row of printMonthRows">
+          <td *ngFor="let header of monthGridOptions.columnDefs">{{ row[header.field] }}</td>
+        </tr>
+      </table>
+
+      <h1>Reports</h1>
+
+      <table>
+        <tr>
+          <td *ngFor="let header of report.gridOptions.columnDefs">{{  header.headerName }}</td>
+        </tr>
+        <tr *ngFor="let row of printReportRows">
+          <td *ngFor="let header of report.gridOptions.columnDefs">{{ row[header.field] }}</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+</div>

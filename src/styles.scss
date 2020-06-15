@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+// Required
+@import "~bootstrap/scss/bootstrap-grid";
+@import "~ag-grid-community/src/styles/ag-grid.scss";
+@import "~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material-mixin";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.ag-theme-material {
+  @include ag-theme-material();
+
+  .ag-row-odd {
+    background-color: rgba(0, 0, 0, .05);
+  }
+
+  .ag-row-hover {
+    cursor: pointer;
+  }
+
+}
